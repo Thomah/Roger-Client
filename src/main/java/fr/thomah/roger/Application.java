@@ -1,11 +1,5 @@
 package fr.thomah.roger;
 
-import com.github.seratch.jslack.Slack;
-import com.github.seratch.jslack.api.rtm.RTMClient;
-import com.github.seratch.jslack.api.rtm.RTMMessageHandler;
-import com.github.seratch.jslack.api.rtm.message.Typing;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.net.InetSocketAddress;
 import java.net.ProxySelector;
 import java.net.http.HttpClient;
@@ -13,6 +7,8 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Timer;
 
+import fr.thomah.roger.clients.KarotzClient;
+import fr.thomah.roger.clients.SlackClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.env.Environment;
@@ -27,7 +23,6 @@ public class Application implements CommandLineRunner {
     static String PROXY_HOST = null;
     static int PROXY_PORT = 0;
     static int REFRESH_MS = 2000;
-    static boolean KAROTZ_AVAILABLE = false;
 
     @Autowired
     private Environment env;
@@ -42,7 +37,6 @@ public class Application implements CommandLineRunner {
         SLACK_TOKEN = env.getProperty("SlackToken");
         BASE_URL = env.getProperty("BaseURL");
         THIS_COMPUTER_URL = env.getProperty("ComputerURL");
-        KAROTZ_AVAILABLE = BASE_URL != null;
 
         String proxy = env.getProperty("HTTP_PROXY");
         if (proxy != null) {

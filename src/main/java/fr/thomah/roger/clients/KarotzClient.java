@@ -1,9 +1,11 @@
-package fr.thomah.roger;
+package fr.thomah.roger.clients;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import fr.thomah.roger.Application;
+import fr.thomah.roger.RogerApplication;
 
-import static fr.thomah.roger.Application.BASE_URL;
+import static fr.thomah.roger.RogerApplication.BASE_URL;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -13,21 +15,21 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-class KarotzClient {
+public class KarotzClient {
 
     private HttpClient client;
     private HttpRequest.Builder builder;
     private int earsPosition = 0;
 
-    KarotzClient(HttpClient client) {
+    public KarotzClient(HttpClient client) {
         this.client = client;
         builder = HttpRequest.newBuilder();
     }
 
-    HttpResponse<String> status() {
+    public HttpResponse<String> status() {
         String url;
-        if (Application.KAROTZ_AVAILABLE) {
-            url = Application.BASE_URL + "/cgi-bin/status";
+        if (RogerApplication.KAROTZ_AVAILABLE) {
+            url = RogerApplication.BASE_URL + "/cgi-bin/status";
         } else {
             url = "http://www.mocky.io/v2/5d126f9631000018c208d35c";
         }
@@ -42,7 +44,7 @@ class KarotzClient {
         return response;
     }
 
-    boolean statusValidation(HttpResponse<String> response) {
+    public boolean statusValidation(HttpResponse<String> response) {
         boolean success = response.statusCode() == 200;
         if (!success)
             return false;
@@ -54,14 +56,14 @@ class KarotzClient {
         System.out.println("Playing : " + file);
         try {
             String url;
-            if (Application.KAROTZ_AVAILABLE) {
-                url = Application.BASE_URL + "/cgi-bin/sound?url=" + Application.THIS_COMPUTER_URL + "/public/music/" + file.replaceAll(" ", "%20");
+            if (RogerApplication.KAROTZ_AVAILABLE) {
+                url = RogerApplication.BASE_URL + "/cgi-bin/sound?url=" + RogerApplication.THIS_COMPUTER_URL + "/public/music/" + file.replaceAll(" ", "%20");
             } else {
                 url = "http://www.mocky.io/v2/5d1279923100001ec508d38e";
             }
             HttpRequest request = builder
                     .uri(URI.create(url)).build();
-            System.out.println(URI.create(Application.BASE_URL + "/cgi-bin/sound?url=" + Application.THIS_COMPUTER_URL + "/public/music/" + file.replaceAll(" ", "%20")));
+            System.out.println(URI.create(RogerApplication.BASE_URL + "/cgi-bin/sound?url=" + RogerApplication.THIS_COMPUTER_URL + "/public/music/" + file.replaceAll(" ", "%20")));
             ears("40");
             client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
@@ -73,14 +75,14 @@ class KarotzClient {
         System.out.println("Playing : " + radio);
         try {
             String url;
-            if (Application.KAROTZ_AVAILABLE) {
-                url = Application.BASE_URL + "/cgi-bin/sound?url=" + radio.replaceAll(" ", "%20");
+            if (RogerApplication.KAROTZ_AVAILABLE) {
+                url = RogerApplication.BASE_URL + "/cgi-bin/sound?url=" + radio.replaceAll(" ", "%20");
             } else {
                 url = "http://www.mocky.io/v2/5d1279923100001ec508d38e";
             }
             HttpRequest request = builder
                     .uri(URI.create(url)).build();
-            System.out.println(URI.create(Application.BASE_URL + "/cgi-bin/sound?url=" + radio.replaceAll(" ", "%20")));
+            System.out.println(URI.create(RogerApplication.BASE_URL + "/cgi-bin/sound?url=" + radio.replaceAll(" ", "%20")));
             client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -91,14 +93,14 @@ class KarotzClient {
         System.out.println("Stoping : ");
         try {
             String url;
-            if (Application.KAROTZ_AVAILABLE) {
-                url = Application.BASE_URL + "/cgi-bin/sound_control?cmd=quit";
+            if (RogerApplication.KAROTZ_AVAILABLE) {
+                url = RogerApplication.BASE_URL + "/cgi-bin/sound_control?cmd=quit";
             } else {
                 url = "http://www.mocky.io/v2/5d19ee0f2f00004c00fd7336";
             }
             HttpRequest request = builder
                     .uri(URI.create(url)).build();
-            System.out.println(URI.create(Application.BASE_URL + "/cgi-bin/sound_control?cmd=quit"));
+            System.out.println(URI.create(RogerApplication.BASE_URL + "/cgi-bin/sound_control?cmd=quit"));
             client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -109,14 +111,14 @@ class KarotzClient {
         System.out.println("Saying : " + text);
         try {
             String url;
-            if (Application.KAROTZ_AVAILABLE) {
-                url = Application.BASE_URL + "/cgi-bin/tts?voice="+langue+"&text=" +text.replaceAll(" ", "%20") +"&nocache=0";
+            if (RogerApplication.KAROTZ_AVAILABLE) {
+                url = RogerApplication.BASE_URL + "/cgi-bin/tts?voice="+langue+"&text=" +text.replaceAll(" ", "%20") +"&nocache=0";
             } else {
                 url = "http://www.mocky.io/v2/5d19ee532f00000e00fd7339";
             }
             HttpRequest request = builder
                     .uri(URI.create(url)).build();
-            System.out.println(URI.create(Application.BASE_URL + "/cgi-bin/tts?voice=" + langue + "&text=" + text.replaceAll(" ", "%20") + "&nocache=0"));
+            System.out.println(URI.create(RogerApplication.BASE_URL + "/cgi-bin/tts?voice=" + langue + "&text=" + text.replaceAll(" ", "%20") + "&nocache=0"));
             client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -129,14 +131,14 @@ class KarotzClient {
         System.out.println("Moving : " + move);
         try {
             String url;
-            if (Application.KAROTZ_AVAILABLE) {
-                url = Application.BASE_URL + "/cgi-bin/ears?left=" + earsPosition + "&right=" + earsPosition + "&noreset=1";
+            if (RogerApplication.KAROTZ_AVAILABLE) {
+                url = RogerApplication.BASE_URL + "/cgi-bin/ears?left=" + earsPosition + "&right=" + earsPosition + "&noreset=1";
             } else {
                 url = "http://www.mocky.io/v2/5d19ef0b2f0000a148fd733f";
             }
             HttpRequest request = builder
                     .uri(URI.create(url)).build();
-            System.out.println(URI.create(Application.BASE_URL + "/cgi-bin/ears?left=" + move + "&right=" + move + "&noreset=1"));
+            System.out.println(URI.create(RogerApplication.BASE_URL + "/cgi-bin/ears?left=" + move + "&right=" + move + "&noreset=1"));
             client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

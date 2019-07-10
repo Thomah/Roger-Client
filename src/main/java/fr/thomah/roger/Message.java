@@ -1,6 +1,6 @@
 package fr.thomah.roger;
 
-class Message {
+public class Message {
     private String clientMsgId;
     private String userId;
     private String text;
@@ -30,7 +30,7 @@ class Message {
         this.userId = userId;
     }
 
-    String getText() {
+    public String getText() {
         return text;
     }
 

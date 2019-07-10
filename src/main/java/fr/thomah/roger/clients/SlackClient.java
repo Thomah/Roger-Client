@@ -1,4 +1,4 @@
-package fr.thomah.roger;
+package fr.thomah.roger.clients;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
+
+import fr.thomah.roger.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -41,26 +43,26 @@ public class SlackClient extends TimerTask {
     private final int probaMax = 1800;
     boolean etatRadio = false;
 
-    void springInit() {
+    public void springInit() {
         HttpClient.Builder clientBuilder = HttpClient.newBuilder();
-        if (Application.PROXY_HOST != null && Application.PROXY_PORT != 0) {
-            clientBuilder = clientBuilder.proxy(ProxySelector.of(new InetSocketAddress(Application.PROXY_HOST, Application.PROXY_PORT)));
+        if (RogerApplication.PROXY_HOST != null && RogerApplication.PROXY_PORT != 0) {
+            clientBuilder = clientBuilder.proxy(ProxySelector.of(new InetSocketAddress(RogerApplication.PROXY_HOST, RogerApplication.PROXY_PORT)));
         }
         client = clientBuilder.build();
         builder = HttpRequest.newBuilder();
     }
 
-    void init() {
+    public void init() {
         try {
             HttpRequest request = builder
-                    .uri(URI.create("https://slack.com/api/auth.test?token=" + Application.SLACK_TOKEN))
+                    .uri(URI.create("https://slack.com/api/auth.test?token=" + RogerApplication.SLACK_TOKEN))
                     .build();
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenApply(HttpResponse::body)
                     .thenAccept(System.out::println)
                     .join();
             request = builder
-                    .uri(URI.create("https://slack.com/api/channels.join?name=nabz&token=" + Application.SLACK_TOKEN))
+                    .uri(URI.create("https://slack.com/api/channels.join?name=nabz&token=" + RogerApplication.SLACK_TOKEN))
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JsonObject jsonObject = new JsonParser().parse(response.body()).getAsJsonObject();
@@ -73,9 +75,9 @@ public class SlackClient extends TimerTask {
         }
     }
 
-    HttpResponse<String> ping() {
+    public HttpResponse<String> ping() {
         HttpRequest request = builder
-                .uri(URI.create("https://slack.com/api/api.test?token=" + Application.SLACK_TOKEN))
+                .uri(URI.create("https://slack.com/api/api.test?token=" + RogerApplication.SLACK_TOKEN))
                 .build();
         HttpResponse<String> response = null;
         try {
@@ -86,7 +88,7 @@ public class SlackClient extends TimerTask {
         return response;
     }
 
-    boolean pingValidation(HttpResponse<String> response) {
+    public boolean pingValidation(HttpResponse<String> response) {
         boolean success = response.statusCode() == 200;
         if (!success) {
             return false;
@@ -99,7 +101,7 @@ public class SlackClient extends TimerTask {
     public void run() {
         try {
             HttpRequest request = builder
-                    .uri(URI.create("https://slack.com/api/channels.history?channel=" + channelId + "&token=" + Application.SLACK_TOKEN))
+                    .uri(URI.create("https://slack.com/api/channels.history?channel=" + channelId + "&token=" + RogerApplication.SLACK_TOKEN))
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JsonObject jsonObject = new JsonParser().parse(response.body()).getAsJsonObject();
@@ -212,11 +214,11 @@ public class SlackClient extends TimerTask {
         return min + (int) (Math.random() * ((max - min) + 1));
     }
 
-    void setDb(Db db) {
+    public void setDb(Db db) {
         this.db = db;
     }
 
-    void setKarotzClient(KarotzClient karotzClient) {
+    public void setKarotzClient(KarotzClient karotzClient) {
         this.karotzClient = karotzClient;
     }
 }

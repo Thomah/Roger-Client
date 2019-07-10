@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-class Db {
+public class Db {
 
     private Connection c;
 
@@ -38,7 +38,7 @@ class Db {
         }
     }
 
-    List<Message> syncMessages(JsonArray messagesInSlack) {
+    public List<Message> syncMessages(JsonArray messagesInSlack) {
         Statement stmt;
         List<Message> messagesInDb = new ArrayList<>();
         List<Message> messagesToAddInDb = new ArrayList<>();

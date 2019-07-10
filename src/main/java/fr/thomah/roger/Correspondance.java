@@ -4,7 +4,7 @@ public class Correspondance{
     private String key;
     private String fileName;
 
-    Correspondance(String string, String string0) {
+    public Correspondance(String string, String string0) {
         key = string;
         fileName = string0;
     }
