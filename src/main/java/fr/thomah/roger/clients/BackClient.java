@@ -25,7 +25,7 @@ public class BackClient {
         this.builder = builder;
     }
 
-    HttpResponse<String> health() {
+    public HttpResponse<String> health() {
         HttpRequest request = builder
                 .uri(URI.create(ROGER_BACK_URL + "/api/health"))
                 .build();
@@ -38,7 +38,7 @@ public class BackClient {
         return response;
     }
 
-    boolean healthValidation(HttpResponse<String> response) {
+    public boolean healthValidation(HttpResponse<String> response) {
         return response.statusCode() == 200;
     }
 
