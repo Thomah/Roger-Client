@@ -2,28 +2,25 @@ package fr.thomah.roger.clients;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fr.thomah.roger.Application;
 import fr.thomah.roger.RogerApplication;
-
-import static fr.thomah.roger.RogerApplication.BASE_URL;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+@Component
 public class KarotzClient {
 
     private HttpClient client;
     private HttpRequest.Builder builder;
     private int earsPosition = 0;
 
-    public KarotzClient(HttpClient client) {
+    public void init(HttpClient client, HttpRequest.Builder builder) {
         this.client = client;
-        builder = HttpRequest.newBuilder();
+        this.builder = builder;
     }
 
     public HttpResponse<String> status() {

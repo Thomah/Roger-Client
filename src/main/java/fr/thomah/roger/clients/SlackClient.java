@@ -1,8 +1,6 @@
 package fr.thomah.roger.clients;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.ProxySelector;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -10,28 +8,17 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.TimerTask;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import com.opencsv.CSVParser;
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
-import javax.annotation.PostConstruct;
 
 import fr.thomah.roger.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class SlackClient extends TimerTask {
-
-    @Autowired
-    private ResourceLoader resourceLoader;
 
     private HttpClient client;
     private HttpRequest.Builder builder;
@@ -43,18 +30,25 @@ public class SlackClient extends TimerTask {
     private final int probaMax = 1800;
     boolean etatRadio = false;
 
-    public void springInit() {
-        HttpClient.Builder clientBuilder = HttpClient.newBuilder();
-        if (RogerApplication.PROXY_HOST != null && RogerApplication.PROXY_PORT != 0) {
-            clientBuilder = clientBuilder.proxy(ProxySelector.of(new InetSocketAddress(RogerApplication.PROXY_HOST, RogerApplication.PROXY_PORT)));
-        }
-        client = clientBuilder.build();
-        builder = HttpRequest.newBuilder();
+    public void init(HttpClient client, HttpRequest.Builder builder) {
+        this.client = client;
+        this.builder = builder;
     }
 
-    public void init() {
+    public void connect() {
         try {
+
             HttpRequest request = builder
+                    .uri(URI.create(BackClient.ROGER_BACK_URL + "/api/files"))
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            JsonArray bodyJson = new JsonParser().parse(response.body()).getAsJsonArray();
+            bodyJson.forEach(fileDataJson -> {
+                JsonObject fileData = fileDataJson.getAsJsonObject();
+                listCorrespondances.add(new Correspondance(fileData.get("matches").getAsString(), fileData.get("fileName").getAsString()));
+            });
+
+            request = builder
                     .uri(URI.create("https://slack.com/api/auth.test?token=" + RogerApplication.SLACK_TOKEN))
                     .build();
             client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
@@ -64,7 +58,7 @@ public class SlackClient extends TimerTask {
             request = builder
                     .uri(URI.create("https://slack.com/api/channels.join?name=nabz&token=" + RogerApplication.SLACK_TOKEN))
                     .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JsonObject jsonObject = new JsonParser().parse(response.body()).getAsJsonObject();
             if (jsonObject.get("ok").getAsBoolean()) {
                 channelId = jsonObject.getAsJsonObject("channel").get("id").getAsString();
@@ -182,30 +176,6 @@ public class SlackClient extends TimerTask {
                 }
             }
         } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @PostConstruct
-    public void initListCorrespondance() {
-        try {
-            File file = resourceLoader.getResource("AssoMessagesSons.csv").getFile();
-            // Create an object of filereader 
-            // class with CSV file as a parameter. 
-            FileReader filereader = new FileReader(file);
-
-            // create csvReader object passing 
-            // file reader as a parameter 
-            CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
-            CSVReader csvReader = new CSVReaderBuilder(filereader).withCSVParser(parser).build();
-
-            String[] nextRecord;
-
-            List<String[]> allData = csvReader.readAll();
-            allData.forEach(ligneCorrespondance -> {
-                listCorrespondances.add(new Correspondance(ligneCorrespondance[0], ligneCorrespondance[1]));
-            });
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }
