@@ -1,30 +1,40 @@
 package fr.thomah.roger.clients;
 
-import org.springframework.messaging.Message;
+import fr.thomah.roger.socket.RogerMessageConverter;
+import fr.thomah.roger.socket.RogerSocketHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.StompCommand;
-import org.springframework.messaging.simp.stomp.StompHeaders;
-import org.springframework.messaging.simp.stomp.StompSession;
-import org.springframework.messaging.simp.stomp.StompSessionHandler;
+import org.springframework.messaging.converter.StringMessageConverter;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
+import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.sockjs.client.Transport;
+import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
+import javax.websocket.ContainerProvider;
+import javax.websocket.WebSocketContainer;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TimerTask;
 
 @Component
-public class BackClient extends TimerTask implements StompSessionHandler {
+public class BackClient extends TimerTask {
 
-    public static final String ROGER_BACK_URL = System.getenv("ROGER_BACK_URL");
+    @Autowired
+    private RogerSocketHandler socketHandler;
 
+    @Autowired
+    private RogerMessageConverter messageConverter;
+
+    private static final String ROGER_BACK_URL = System.getenv("ROGER_BACK_URL");
     private HttpClient client;
     private HttpRequest.Builder builder;
 
@@ -51,11 +61,21 @@ public class BackClient extends TimerTask implements StompSessionHandler {
     }
 
     public void connect() {
-        WebSocketClient client = new StandardWebSocketClient();
-        WebSocketStompClient stompClient = new WebSocketStompClient(client);
-        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-        stompClient.connect("ws://roger-karotz.herokuapp.com/socket", this);
-        new Scanner(System.in).nextLine(); // Don't close immediately.
+        int MAX_TEXT_MESSAGE_BUFFER_SIZE = 20 * 1024 * 1024;
+        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        container.setDefaultMaxTextMessageBufferSize(MAX_TEXT_MESSAGE_BUFFER_SIZE);
+        WebSocketClient webSocketClient = new StandardWebSocketClient(container);
+        List<Transport> transports = new ArrayList<>();
+        transports.add(new WebSocketTransport(webSocketClient));
+        SockJsClient sockJsClient = new SockJsClient(transports);
+        ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+        taskScheduler.afterPropertiesSet();
+        WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
+        stompClient.setMessageConverter(messageConverter);
+        stompClient.setTaskScheduler(taskScheduler);
+        stompClient.setDefaultHeartbeat(new long[] {0, 0});
+        stompClient.connect("ws://roger-karotz.herokuapp.com/socket", socketHandler);
+        stompClient.setTaskScheduler(taskScheduler);
     }
 
     @Override
@@ -63,29 +83,4 @@ public class BackClient extends TimerTask implements StompSessionHandler {
         health();
     }
 
-    @Override
-    public void afterConnected(StompSession stompSession, StompHeaders stompHeaders) {
-        stompSession.subscribe("/command", this);
-        //stompSession.send("/app/chat", getSampleMessage());
-    }
-
-    @Override
-    public void handleException(StompSession stompSession, StompCommand stompCommand, StompHeaders stompHeaders, byte[] bytes, Throwable throwable) {
-
-    }
-
-    @Override
-    public void handleTransportError(StompSession stompSession, Throwable throwable) {
-
-    }
-
-    @Override
-    public Type getPayloadType(StompHeaders stompHeaders) {
-        return null;
-    }
-
-    @Override
-    public void handleFrame(StompHeaders stompHeaders, Object payload) {
-        System.out.println("Received : " + payload.toString());
-    }
 }

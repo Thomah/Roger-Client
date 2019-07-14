@@ -2,7 +2,6 @@ package fr.thomah.roger;
 
 import fr.thomah.roger.clients.BackClient;
 import fr.thomah.roger.clients.KarotzClient;
-import fr.thomah.roger.clients.SlackClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,9 +20,8 @@ import org.springframework.context.event.EventListener;
 @SpringBootApplication
 public class RogerApplication {
 
-	public static final String SLACK_TOKEN = System.getenv("SlackToken");
-	public static final String BASE_URL = System.getenv("BaseURL");
-	public static final String THIS_COMPUTER_URL = System.getenv("ComputerURL");
+	public static final String BASE_URL = System.getenv("ROGER_BASE_URL");
+	public static final String THIS_COMPUTER_URL = System.getenv("ROGER_COMPUTER_URL");
 	public static final boolean KAROTZ_AVAILABLE = BASE_URL != null;
 	private static String PROXY_HOST = null;
 	private static int PROXY_PORT = 0;
@@ -35,9 +33,6 @@ public class RogerApplication {
 
 	@Autowired
 	private KarotzClient karotzClient;
-
-	@Autowired
-	private SlackClient slackClient;
 
 	public static void main(String[] args) {
 		SpringApplication.run(RogerApplication.class, args);
@@ -58,24 +53,15 @@ public class RogerApplication {
 			builder = builder.proxy(ProxySelector.of(new InetSocketAddress(PROXY_HOST, PROXY_PORT)));
 		}
 
-		Db db = new Db();
-
 		HttpClient httpClient = builder.build();
 		HttpRequest.Builder builderRequest = HttpRequest.newBuilder();
 
 		backClient.init(httpClient, builderRequest);
-		slackClient.init(httpClient, builderRequest);
 		karotzClient.init(httpClient, builderRequest);
 
 		// Wait for Roger Server to be accessible
 		poller.method(backClient::health)
 				.until(backClient::healthValidation)
-				.poll(Duration.ofHours(1), 1000)
-				.execute();
-
-		// Wait for Slack to be accessible
-		poller.method(slackClient::ping)
-				.until(slackClient::pingValidation)
 				.poll(Duration.ofHours(1), 1000)
 				.execute();
 
@@ -85,14 +71,9 @@ public class RogerApplication {
 				.poll(Duration.ofHours(1), 1000)
 				.execute();
 
-		slackClient.setKarotzClient(karotzClient);
-		slackClient.setDb(db);
-		slackClient.connect();
-
 		backClient.connect();
 
 		Timer timer = new Timer(true);
-		timer.scheduleAtFixedRate(slackClient, 0, 2000);
 		timer.scheduleAtFixedRate(backClient, 0, 120000);
 	}
 }
