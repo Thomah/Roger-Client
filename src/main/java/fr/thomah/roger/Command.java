@@ -27,7 +27,7 @@ public class Command {
             value = entry.getValue();
             stringBuilder.append(key);
             stringBuilder.append("=");
-            stringBuilder.append(value);
+            stringBuilder.append(value.replaceAll(" ", "%20"));
         }
         return stringBuilder.toString();
     }
