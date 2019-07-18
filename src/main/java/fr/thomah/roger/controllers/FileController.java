@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 @RequestMapping("/files")
 public class FileController {
 
-    private static final File FILES_DIR = new File("./files");
+    public static final File FILES_DIR = new File("./files");
 
     @Autowired
     private Environment env;

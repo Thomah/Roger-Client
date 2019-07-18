@@ -20,6 +20,7 @@ import org.springframework.context.event.EventListener;
 public class RogerApplication {
 
 	public static final String BASE_URL = System.getenv("ROGER_BASE_URL");
+	public static final String TOKEN = System.getenv("ROGER_TOKEN");
 	public static String THIS_COMPUTER_URL;
 	public static final boolean KAROTZ_AVAILABLE = BASE_URL != null;
 	private static String PROXY_HOST = null;

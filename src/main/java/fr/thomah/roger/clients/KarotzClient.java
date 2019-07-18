@@ -58,7 +58,7 @@ public class KarotzClient {
             incEars(command);
             endpointAndParams = command.toString();
         } else if(command.endpoint.equals("/sound")) {
-            endpointAndParams = endpointAndParams.replaceAll("<THIS_COMPUTER_URL>", RogerApplication.THIS_COMPUTER_URL);
+            endpointAndParams = endpointAndParams.replaceAll("<CLIENT_URL>", RogerApplication.THIS_COMPUTER_URL);
         }
         try {
             String url;
