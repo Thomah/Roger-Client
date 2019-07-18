@@ -2,7 +2,7 @@ package fr.thomah.roger.clients;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fr.thomah.roger.Command;
+import fr.thomah.roger.entities.Command;
 import fr.thomah.roger.RogerApplication;
 import org.springframework.stereotype.Component;
 
@@ -57,6 +57,8 @@ public class KarotzClient {
         if(command.endpoint.equals("/ears")) {
             incEars(command);
             endpointAndParams = command.toString();
+        } else if(command.endpoint.equals("/sound")) {
+            endpointAndParams = endpointAndParams.replaceAll("<THIS_COMPUTER_URL>", RogerApplication.THIS_COMPUTER_URL);
         }
         try {
             String url;

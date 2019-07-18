@@ -2,7 +2,7 @@ package fr.thomah.roger.socket;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import fr.thomah.roger.Command;
+import fr.thomah.roger.entities.Command;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.converter.AbstractMessageConverter;

@@ -1,6 +1,6 @@
 package fr.thomah.roger.socket;
 
-import fr.thomah.roger.Command;
+import fr.thomah.roger.entities.Command;
 import fr.thomah.roger.clients.KarotzClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.stomp.StompCommand;

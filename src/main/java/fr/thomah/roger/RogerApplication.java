@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.net.InetSocketAddress;
-import java.net.ProxySelector;
+import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -21,7 +20,7 @@ import org.springframework.context.event.EventListener;
 public class RogerApplication {
 
 	public static final String BASE_URL = System.getenv("ROGER_BASE_URL");
-	public static final String THIS_COMPUTER_URL = System.getenv("ROGER_COMPUTER_URL");
+	public static String THIS_COMPUTER_URL;
 	public static final boolean KAROTZ_AVAILABLE = BASE_URL != null;
 	private static String PROXY_HOST = null;
 	private static int PROXY_PORT = 0;
@@ -51,6 +50,16 @@ public class RogerApplication {
 		HttpClient.Builder builder = HttpClient.newBuilder();
 		if (PROXY_HOST != null && PROXY_PORT != 0) {
 			builder = builder.proxy(ProxySelector.of(new InetSocketAddress(PROXY_HOST, PROXY_PORT)));
+		}
+
+		InetAddress inetAddress = null;
+		try {
+			inetAddress = InetAddress.getLocalHost();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		if(inetAddress != null) {
+			THIS_COMPUTER_URL = "http://" + inetAddress.getHostAddress() + ":8080";
 		}
 
 		HttpClient httpClient = builder.build();

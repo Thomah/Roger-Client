@@ -60,6 +60,10 @@ public class BackClient extends TimerTask {
         return response.statusCode() == 200;
     }
 
+    public void syncFileData() {
+
+    }
+
     public void connect() {
         int MAX_TEXT_MESSAGE_BUFFER_SIZE = 20 * 1024 * 1024;
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();

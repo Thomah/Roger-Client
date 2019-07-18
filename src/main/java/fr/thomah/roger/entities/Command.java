@@ -1,4 +1,4 @@
-package fr.thomah.roger;
+package fr.thomah.roger.entities;
 
 import java.util.HashMap;
 import java.util.Map;
