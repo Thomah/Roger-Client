@@ -82,11 +82,13 @@ public class BackClient extends TimerTask {
             JsonArray files = new JsonParser().parse(response.body()).getAsJsonArray();
             for (JsonElement fileElement : files) {
                 FileData fileData = gson.fromJson(fileElement.getAsJsonObject(), FileData.class);
-                System.out.println(fileData.fileName);
-                Path filepath = Paths.get(FileController.FILES_DIR.getPath(), fileData.fileName);
-                String url = ROGER_BACK_URL + "/api/files/" + fileData.id + "?token=" + RogerApplication.TOKEN;
-                InputStream in = new URL(url).openStream();
-                Files.copy(in, filepath, StandardCopyOption.REPLACE_EXISTING);
+                if(!fileData.isSync) {
+                    System.out.println("Sync : " + fileData.fileName);
+                    Path filepath = Paths.get(FileController.FILES_DIR.getPath(), fileData.fileName);
+                    String url = ROGER_BACK_URL + "/api/files/" + fileData.id + "?token=" + RogerApplication.TOKEN;
+                    InputStream in = new URL(url).openStream();
+                    Files.copy(in, filepath, StandardCopyOption.REPLACE_EXISTING);
+                }
             }
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
