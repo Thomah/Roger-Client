@@ -119,8 +119,8 @@ public class BackClient extends TimerTask {
         health();
         if(stompClient != null) {
             stompClient.stop();
-            connect();
         }
+        connect();
     }
 
 }
