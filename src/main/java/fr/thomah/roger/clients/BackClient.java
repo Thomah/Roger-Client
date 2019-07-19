@@ -49,6 +49,7 @@ public class BackClient extends TimerTask {
     private HttpClient client;
     private HttpRequest.Builder builder;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private WebSocketStompClient stompClient;
 
     public void init(HttpClient client, HttpRequest.Builder builder) {
         this.client = client;
@@ -105,7 +106,7 @@ public class BackClient extends TimerTask {
         SockJsClient sockJsClient = new SockJsClient(transports);
         ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
         taskScheduler.afterPropertiesSet();
-        WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
+        stompClient = new WebSocketStompClient(sockJsClient);
         stompClient.setMessageConverter(messageConverter);
         stompClient.setTaskScheduler(taskScheduler);
         stompClient.setDefaultHeartbeat(new long[]{0, 0});
@@ -117,6 +118,9 @@ public class BackClient extends TimerTask {
     public void run() {
         syncFileData();
         health();
+        if(stompClient == null || !stompClient.isRunning()) {
+            connect();
+        }
     }
 
 }
