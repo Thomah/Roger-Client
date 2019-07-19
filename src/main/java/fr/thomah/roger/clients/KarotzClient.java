@@ -53,7 +53,6 @@ public class KarotzClient {
 
     public void send(Command command) {
         String endpointAndParams = command.toString();
-        System.out.println("Sending : " + endpointAndParams);
         if(command.endpoint.equals("/ears")) {
             incEars(command);
             endpointAndParams = command.toString();
@@ -67,6 +66,7 @@ public class KarotzClient {
             } else {
                 url = "http://www.mocky.io/v2/5d19ee532f00000e00fd7339";
             }
+            System.out.println("Sending : " + endpointAndParams);
             HttpRequest request = builder
                     .uri(URI.create(url)).build();
             client.send(request, HttpResponse.BodyHandlers.ofString());
