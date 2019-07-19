@@ -81,6 +81,7 @@ public class RogerApplication {
 				.poll(Duration.ofHours(1), 1000)
 				.execute();
 
+		backClient.connect();
 
 		Timer timer = new Timer(true);
 		timer.scheduleAtFixedRate(backClient, 0, 180000);
