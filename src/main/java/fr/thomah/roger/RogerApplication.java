@@ -82,6 +82,6 @@ public class RogerApplication {
 				.execute();
 
 		Timer timer = new Timer(true);
-		timer.scheduleAtFixedRate(backClient, 0, 120000);
+		timer.scheduleAtFixedRate(backClient, 0, 180000);
 	}
 }

@@ -117,7 +117,8 @@ public class BackClient extends TimerTask {
     public void run() {
         syncFileData();
         health();
-        if(stompClient == null || !stompClient.isRunning()) {
+        if(stompClient != null) {
+            stompClient.stop();
             connect();
         }
     }
