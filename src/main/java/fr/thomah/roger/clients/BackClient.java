@@ -111,7 +111,6 @@ public class BackClient extends TimerTask {
         stompClient.setTaskScheduler(taskScheduler);
         stompClient.setDefaultHeartbeat(new long[]{0, 0});
         stompClient.connect("ws://roger-karotz.herokuapp.com/socket", socketHandler);
-        stompClient.setTaskScheduler(taskScheduler);
     }
 
     @Override
