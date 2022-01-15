@@ -1,11 +1,14 @@
-package fr.thomah.roger;
+package fr.thomah.roger.common;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-class MethodPoller<T> {
+@Slf4j
+public class MethodPoller<T> {
 
     private Duration pollDuration;
     private int pollIntervalMillis;
@@ -13,26 +16,26 @@ class MethodPoller<T> {
     private Supplier<T> pollMethod = null;
     private Predicate<T> pollResultPredicate = null;
 
-    MethodPoller() {
+    public MethodPoller() {
     }
 
-    MethodPoller<T> poll(Duration pollDuration, int pollIntervalMillis) {
+    public MethodPoller<T> poll(Duration pollDuration, int pollIntervalMillis) {
         this.pollDuration = pollDuration;
         this.pollIntervalMillis = pollIntervalMillis;
         return this;
     }
 
-    MethodPoller<T> method(Supplier<T> supplier) {
+    public MethodPoller<T> method(Supplier<T> supplier) {
         pollMethod = supplier;
         return this;
     }
 
-    MethodPoller<T> until(Predicate<T> predicate) {
+    public MethodPoller<T> until(Predicate<T> predicate) {
         pollResultPredicate = predicate;
         return this;
     }
 
-    T execute() {
+    public T execute() {
         T result = null;
         boolean pollSucceeded = false;
         LocalTime beginTime = LocalTime.now();
@@ -45,9 +48,9 @@ class MethodPoller<T> {
                 now = LocalTime.now();
                 currentDuration = Duration.between(beginTime, now);
 
-                System.out.println("Result : " + result);
-                System.out.println("Poll Succeeded : " + pollSucceeded);
-                System.out.println("Duration : " + currentDuration.getSeconds());
+                log.debug("Result : " + result);
+                log.debug("Poll Succeeded : " + pollSucceeded);
+                log.debug("Duration : " + currentDuration.getSeconds());
 
                 Thread.sleep(pollIntervalMillis);
             }

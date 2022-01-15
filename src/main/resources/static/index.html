@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Roger</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Google Font -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <style>
+        .container {
+            max-width: 100%;
+        }
+        .row {
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+        .card-header .nav-item {
+            margin-right: 0.2em;
+        }
+        .action-bar > * {
+            margin-right: 0.2em;
+        }
+        button > a {
+          color: inherit;
+          text-decoration: inherit;
+        }
+        button > a:hover {
+          color: inherit;
+          text-decoration: inherit;
+        }
+    </style>
+</head>
+
+<body onload="refresh()">
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light static-top">
+        <a class="navbar-brand" href="/">Roger</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+            </ul>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills pull-left">
+                        <li class="nav-item">
+                            <a class="nav-link">Files</a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-pills card-header-pills pull-right">
+                        <li class="nav-item">
+                            <a class="nav-link btn-primary" href="#" id="save" onclick="save()"><i class="far fa-save"></i> Save</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-primary" href="#" id="refresh" onclick="refresh()"><i
+                                    class="fas fa-sync"></i> Refresh</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <table id="files" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Original Name</th>
+                                <th>Directory</th>
+                                <th>Format</th>
+                                <th>Matches</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills">
+                        <li class="nav-item">
+                            <a class="nav-link">Upload a new file</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="uploadFile">File input</label>
+                        <input type="file" id="uploadFile">
+                        <p class="help-block">1KB max</p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary" onclick="upload()" id="upload">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JQuery Popper -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<!-- Bootstrap -->
+<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<!-- Font Awesome-->
+<script type="text/javascript" src="https://kit.fontawesome.com/3ba5f305f8.js"></script>
+<!-- Roger -->
+<script type="text/javascript" src="request.js"></script>
+<script type="text/javascript" src="index.js"></script>
+
+</body>
+
+</html>
