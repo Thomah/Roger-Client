@@ -1,7 +1,6 @@
 package fr.thomah.roger.file;
 
 import fr.thomah.roger.common.Randomizer;
-import fr.thomah.roger.http.HttpClientService;
 import fr.thomah.roger.http.MimeTypes;
 import fr.thomah.roger.http.exception.BadRequestException;
 import fr.thomah.roger.http.exception.InternalServerException;
@@ -25,9 +24,6 @@ import java.util.regex.Matcher;
 @Slf4j
 @Service
 public class FileService {
-
-    @Autowired
-    private HttpClientService httpClientService;
 
     @Autowired
     private FileRepository fileRepository;
@@ -96,7 +92,7 @@ public class FileService {
         entity.setName(name);
         entity.setOriginalName(multipartFile.getOriginalFilename());
         entity.setFormat(format);
-        entity.setUrl(httpClientService.getBaseUrl() + "/files/" + entity.getDirectory() + "/" + finalFileName);
+        entity.setUrl("/files/" + entity.getDirectory() + "/" + finalFileName);
 
         return entity;
     }

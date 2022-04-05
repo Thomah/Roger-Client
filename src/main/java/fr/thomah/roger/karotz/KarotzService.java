@@ -2,6 +2,12 @@ package fr.thomah.roger.karotz;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import fr.thomah.roger.common.MethodPoller;
+import fr.thomah.roger.common.Randomizer;
 import fr.thomah.roger.http.HttpClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +85,7 @@ public class KarotzService {
                     .uri(URI.create(url))
                     .timeout(Duration.ofSeconds(5))
                     .build();
-            ears("40");
+            ears(String.valueOf(Randomizer.generateNumberBetween(10, 20)));
             log.info("GET : {}", url);
             httpClientService.getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
@@ -108,4 +114,52 @@ public class KarotzService {
         }
     }
 
+    void reboot() {
+
+        String[] parts = karotzBaseUrl.split(":");
+        String host = parts[1].replaceAll("//","");
+
+        Session session = null;
+        ChannelExec channel = null;
+
+        try {
+
+            // Prepare SSH channel
+            session = new JSch().getSession("karotz", host, 22);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect();
+
+            // Execute reboot command
+            channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand("/sbin/reboot -d 1");
+            channel.setInputStream(null);
+            channel.connect();
+
+        } catch (JSchException e) {
+            log.error("Cannot run reboot command on Karotz", e);
+        } finally {
+            if (session != null) {
+                session.disconnect();
+            }
+            if (channel != null) {
+                channel.disconnect();
+            }
+        }
+
+        // Waiting for 5sec before probing
+        log.debug("Waiting for 5sec before probing");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            log.error("Sleeping was interrupted", e);
+        }
+
+        // Probing Karotz status
+        MethodPoller<HttpResponse<String>> poller = new MethodPoller<>();
+        poller.method(this::status)
+                .until(this::statusValidation)
+                .poll(Duration.ofHours(1), 1000)
+                .execute();
+
+    }
 }
