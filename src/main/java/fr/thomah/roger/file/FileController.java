@@ -23,6 +23,11 @@ public class FileController {
         return fileService.readOnFilesystem(request);
     }
 
+    @RequestMapping(value = "/api/sounds", method = RequestMethod.GET)
+    public List<FileEntity> sounds() {
+        return fileService.listSounds();
+    }
+
     @RequestMapping(value = "/api/files", method = RequestMethod.GET)
     public List<FileEntity> list() {
         return fileService.list();

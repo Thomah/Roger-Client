@@ -20,4 +20,11 @@ public class KarotzController {
         karotzService.sound(url);
     }
 
+    @RequestMapping(value = "/api/karotz/snapshot", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void snapshot() {
+        karotzService.takeSnapshot();
+        karotzService.downloadSnapshot(karotzService.listSnapshots());
+        karotzService.clearSnapshots();
+    }
+
 }

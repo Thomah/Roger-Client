@@ -1,8 +1,10 @@
 package fr.thomah.roger;
 
 import fr.thomah.roger.common.MethodPoller;
+import fr.thomah.roger.http.HttpClientService;
+import fr.thomah.roger.karotz.KarotzRoutine;
 import fr.thomah.roger.karotz.KarotzService;
-import fr.thomah.roger.karotz.KarotzTask;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -14,14 +16,18 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Timer;
 
+@Slf4j
 @SpringBootApplication
 public class RogerApplication {
+
+	@Autowired
+	private HttpClientService httpClientService;
 
 	@Autowired
 	private KarotzService karotzService;
 
 	@Autowired
-	private KarotzTask karotzTask;
+	private KarotzRoutine karotzRoutine;
 
 	@Value("${fr.thomah.roger.karotz.automate.interval}")
 	private int interval;
@@ -32,6 +38,8 @@ public class RogerApplication {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void init() {
+		log.info("Roger is listening on {}", httpClientService.getBaseUrl());
+
 		MethodPoller<HttpResponse<String>> poller = new MethodPoller<>();
 
 		// Wait for Karotz to be accessible
@@ -41,6 +49,7 @@ public class RogerApplication {
 				.execute();
 
 		Timer timer = new Timer(true);
-		timer.scheduleAtFixedRate(karotzTask, 0, interval * 1000L);
+		timer.scheduleAtFixedRate(karotzRoutine, 0, interval * 1000L);
+
 	}
 }

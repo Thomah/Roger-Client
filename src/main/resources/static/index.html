@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Roger</title>
+    <title>🐰 Roger 🐰</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap -->
@@ -20,6 +20,9 @@
         }
         .row {
             margin-top: 1em;
+            margin-bottom: 1em;
+        }
+        .card {
             margin-bottom: 1em;
         }
         .card-header .nav-item {
@@ -42,7 +45,7 @@
 <body onload="refresh()">
 <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light bg-light static-top">
-        <a class="navbar-brand" href="/">Roger</a>
+        <a class="navbar-brand" href="/">🐰 Roger 🐰</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -54,44 +57,7 @@
         </div>
     </nav>
     <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <ul class="nav nav-pills card-header-pills pull-left">
-                        <li class="nav-item">
-                            <a class="nav-link">Files</a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-pills card-header-pills pull-right">
-                        <li class="nav-item">
-                            <a class="nav-link btn-primary" href="#" id="save" onclick="save()"><i class="far fa-save"></i> Save</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn-primary" href="#" id="refresh" onclick="refresh()"><i
-                                    class="fas fa-sync"></i> Refresh</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body">
-                    <table id="files" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Original Name</th>
-                                <th>Directory</th>
-                                <th>Format</th>
-                                <th>Matches</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card card-primary">
                 <div class="card-header">
                     <ul class="nav nav-pills card-header-pills">
@@ -109,6 +75,56 @@
                 </div>
                 <div class="card-footer">
                     <button class="btn btn-primary" onclick="upload()" id="upload">Submit</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills pull-left">
+                        <li class="nav-item">
+                            <a class="nav-link">Sounds</a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-pills card-header-pills pull-right">
+                        <li class="nav-item">
+                            <a class="nav-link btn-primary" href="#" id="save" onclick="save()"><i class="far fa-save"></i> Save</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-primary" href="#" id="refresh" onclick="refresh()"><i
+                                    class="fas fa-sync"></i> Refresh</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <table id="files" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Original Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills pull-left">
+                        <li class="nav-item">
+                            <a class="nav-link">Snapshots</a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-pills card-header-pills pull-right">
+                        <li class="nav-item">
+                            <a class="nav-link btn-primary" href="#" id="snapshot" onclick="snapshot()"><i class="far fa-save"></i> Take Snapshot</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 function refresh() {
   overload_xhr("GET",
-    "/api/files",
+    "/api/sounds",
     (xhr) => {
       var json = JSON.parse(xhr.responseText);
       doc_refresh(json);
@@ -22,6 +22,19 @@ function save() {
     () => { },
     JSON.stringify(doc_getValues()),
     document.getElementById("save")
+  );
+}
+
+function snapshot() {
+  overload_xhr(
+    "POST",
+    `/api/karotz/snapshot`,
+    () => { },
+    (xhr) => {
+      xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
+    },
+    () => { },
+    document.getElementById("snapshot")
   );
 }
 
@@ -97,38 +110,10 @@ function doc_refresh(json) {
     newEntry = document.createElement("tr");
     newEntry.id = row.id;
 
-    // Name
-    cell = document.createElement("td");
-    cell.classList.add("name");
-    cell.textContent = row.name;
-    newEntry.appendChild(cell);
-
     // Original Name
     cell = document.createElement("td");
     cell.classList.add("originalName");
     cell.textContent = row.originalName;
-    newEntry.appendChild(cell);
-
-    // Directory
-    cell = document.createElement("td");
-    cell.classList.add("directory");
-    cell.textContent = row.directory;
-    newEntry.appendChild(cell);
-
-    // Format
-    cell = document.createElement("td");
-    cell.classList.add("format");
-    cell.textContent = row.format;
-    newEntry.appendChild(cell);
-
-    // Matches
-    cell = document.createElement("td");
-    cellContent = document.createElement("input");
-    cellContent.type = "text";
-    cellContent.classList.add("form-control");
-    cellContent.classList.add("matches");
-    cellContent.value = row.matches;
-    cell.appendChild(cellContent);
     newEntry.appendChild(cell);
 
     // Actions

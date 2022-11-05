@@ -1,11 +1,14 @@
 package fr.thomah.roger.http;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.InetAddress;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.net.http.HttpClient;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Service
@@ -40,6 +43,10 @@ public class HttpClientService {
             log.error("Unable to get host IP address");
         }
         return null;
+    }
+
+    public static String encodeValue(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 
 }
