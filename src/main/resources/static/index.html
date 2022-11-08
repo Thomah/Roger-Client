@@ -39,6 +39,16 @@
           color: inherit;
           text-decoration: inherit;
         }
+        #snapshots > div {
+            text-align: center;
+        }
+        #snapshots img {
+            max-width: 100%;
+        }
+        #snapshots button {
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
     </style>
 </head>
 
@@ -57,6 +67,31 @@
         </div>
     </nav>
     <div class="row">
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <ul class="nav nav-pills card-header-pills pull-left">
+                        <li class="nav-item">
+                            <a class="nav-link">Snapshots</a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-pills card-header-pills pull-right">
+                        <li class="nav-item">
+                            <a class="nav-link btn-primary" href="#" id="snapshot" onclick="snapshot()"><i class="fa fa-camera-retro"></i> Take Snapshot</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-primary" href="#" id="refresh-snapshots" onclick="refreshSnapshots()"><i
+                                    class="fas fa-sync"></i> Refresh</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div id="snapshots" class="row">
+
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-6">
             <div class="card card-primary">
                 <div class="card-header">
@@ -89,7 +124,7 @@
                             <a class="nav-link btn-primary" href="#" id="save" onclick="save()"><i class="far fa-save"></i> Save</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-primary" href="#" id="refresh" onclick="refresh()"><i
+                            <a class="nav-link btn-primary" href="#" id="refresh-sounds" onclick="refreshSounds()"><i
                                     class="fas fa-sync"></i> Refresh</a>
                         </li>
                     </ul>
@@ -109,25 +144,6 @@
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <ul class="nav nav-pills card-header-pills pull-left">
-                        <li class="nav-item">
-                            <a class="nav-link">Snapshots</a>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-pills card-header-pills pull-right">
-                        <li class="nav-item">
-                            <a class="nav-link btn-primary" href="#" id="snapshot" onclick="snapshot()"><i class="far fa-save"></i> Take Snapshot</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body">
-
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 

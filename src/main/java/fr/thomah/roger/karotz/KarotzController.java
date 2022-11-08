@@ -22,9 +22,15 @@ public class KarotzController {
 
     @RequestMapping(value = "/api/karotz/snapshot", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public void snapshot() {
-        karotzService.takeSnapshot();
-        karotzService.downloadSnapshot(karotzService.listSnapshots());
-        karotzService.clearSnapshots();
+        karotzService.tts("Dans 5 secondes je vais prendre une photo. Préparez-vous.");
+        try {
+            Thread.sleep(5000);
+            karotzService.takeSnapshot();
+            karotzService.downloadSnapshot(karotzService.listSnapshots());
+            karotzService.clearSnapshots();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

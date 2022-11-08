@@ -1,20 +1,38 @@
 function refresh() {
+  refreshSounds();
+  refreshSnapshots();
+}
+
+function refreshSounds() {
   overload_xhr("GET",
     "/api/sounds",
     (xhr) => {
       var json = JSON.parse(xhr.responseText);
-      doc_refresh(json);
+      doc_refreshSounds(json);
     },
     () => { },
     () => { },
     "",
-    document.getElementById("refresh"));
+    document.getElementById("refresh-sounds"));
+}
+
+function refreshSnapshots() {
+  overload_xhr("GET",
+    "/api/snapshots",
+    (xhr) => {
+      var json = JSON.parse(xhr.responseText);
+      doc_refreshSnapshots(json);
+    },
+    () => { },
+    () => { },
+    "",
+    document.getElementById("refresh-snapshots"));
 }
 
 function save() {
   overload_xhr(
     "PUT",
-    `/api/files`,
+    "/api/files",
     () => { },
     (xhr) => {
       xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
@@ -26,16 +44,19 @@ function save() {
 }
 
 function snapshot() {
-  overload_xhr(
-    "POST",
-    `/api/karotz/snapshot`,
-    () => { },
-    (xhr) => {
-      xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-    },
-    () => { },
-    document.getElementById("snapshot")
-  );
+    overload_xhr(
+        "POST",
+        `/api/karotz/snapshot`,
+        () => {
+            refreshSnapshots();
+        },
+        (xhr) => {
+          xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
+        },
+        () => { },
+        "",
+        document.getElementById("snapshot")
+    );
 }
 
 function upload() {
@@ -91,7 +112,52 @@ var remove = function remove() {
   );
 };
 
-function doc_refresh(json) {
+function doc_refreshSnapshots(json) {
+  var list = document
+    .getElementById("snapshots");
+  list.style.display = "none";
+
+  // Delete previous entries
+  var itemCount = list.childNodes.length;
+  for (var x = itemCount - 1; x >= 0; x--) {
+    list.removeChild(list.childNodes[x]);
+  }
+
+  // Append new entries
+  var itemId, item, newEntry, div1, div2, link, image;
+  for (itemId in json) {
+    item = json[itemId];
+    newEntry = document.createElement("div");
+    newEntry.classList.add("col-md-4");
+    newEntry.id = item.id;
+
+    // Image
+    link = document.createElement("a");
+    link.href = item.url;
+    image = document.createElement("img");
+    image.setAttribute("src", item.url);
+    link.appendChild(image);
+    newEntry.appendChild(link);
+
+    // -- Delete Button
+    button = document.createElement("button");
+    button.classList.add("btn");
+    button.classList.add("btn-danger");
+    button.appendChild(document.createTextNode("Delete"));
+    button.onclick = remove;
+    div2 = document.createElement("div");
+    div2.appendChild(button);
+    div1 = document.createElement("div");
+    div1.appendChild(div2);
+    newEntry.appendChild(div1);
+
+    list.appendChild(newEntry);
+  }
+
+  list.style.display = "flex";
+}
+
+function doc_refreshSounds(json) {
   var table = document
     .getElementById("files")
     .getElementsByTagName("tbody")[0];
@@ -121,29 +187,29 @@ function doc_refresh(json) {
     cellSpan = document.createElement("span");
     cellSpan.classList.add("action-bar");
 
+    // -- Play Button
+    button = document.createElement("button");
+    button.classList.add("btn");
+    button.classList.add("btn-primary");
+    button.appendChild(document.createTextNode("Play"));
+    button.onclick = play;
+    cellSpan.appendChild(button);
+
     // -- Download Button
     button = document.createElement("button");
     button.classList.add("btn");
     button.classList.add("btn-secondary");
-    link = document.createElement("a")
+    link = document.createElement("a");
     link.classList.add("url");
-    link.href = row.url
-    link.textContent = "Download"
+    link.href = row.url;
+    link.textContent = "Download";
     button.appendChild(link);
-    cellSpan.appendChild(button);
-
-    // -- Play Button
-    button = document.createElement("button");
-    button.classList.add("btn");
-    button.classList.add("btn-secondary");
-    button.appendChild(document.createTextNode("Play"));
-    button.onclick = play;
     cellSpan.appendChild(button);
 
     // -- Delete Button
     button = document.createElement("button");
     button.classList.add("btn");
-    button.classList.add("btn-secondary");
+    button.classList.add("btn-danger");
     button.appendChild(document.createTextNode("Delete"));
     button.onclick = remove;
     cellSpan.appendChild(button);

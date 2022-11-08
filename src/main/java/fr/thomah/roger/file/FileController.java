@@ -20,12 +20,22 @@ public class FileController {
 
     @RequestMapping(value = "/files/**", method = RequestMethod.GET)
     public @ResponseBody byte[] getFile(HttpServletRequest request) throws IOException {
-        return fileService.readOnFilesystem(request);
+        return fileService.readOnFilesystem(request, "/");
+    }
+
+    @RequestMapping(value = "/files/snapshots/**", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] getSnapshot(HttpServletRequest request) throws IOException {
+        return fileService.readOnFilesystem(request, "/snapshots/");
     }
 
     @RequestMapping(value = "/api/sounds", method = RequestMethod.GET)
     public List<FileEntity> sounds() {
         return fileService.listSounds();
+    }
+
+    @RequestMapping(value = "/api/snapshots", method = RequestMethod.GET)
+    public List<FileEntity> snapshots() {
+        return fileService.listSnapshots();
     }
 
     @RequestMapping(value = "/api/files", method = RequestMethod.GET)

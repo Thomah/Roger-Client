@@ -34,11 +34,12 @@ public class FileService {
     @Value("${fr.thomah.roger.storage.data}")
     private String dataStorageFolder;
 
-    public byte[] readOnFilesystem(HttpServletRequest request) throws IOException {
+    public byte[] readOnFilesystem(HttpServletRequest request, String prefix) throws IOException {
         String path = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
         String matchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         String pathFile = new AntPathMatcher().extractPathWithinPattern(matchPattern, path);
         pathFile = pathFile.replaceAll("/", Matcher.quoteReplacement(File.separator));
+        pathFile = prefix.replaceAll("/", Matcher.quoteReplacement(File.separator)) + pathFile;
         InputStream in = new FileInputStream(rootStorageFolder + File.separator + dataStorageFolder + File.separator + pathFile);
         log.debug("Getting file {}", rootStorageFolder + File.separator + dataStorageFolder + File.separator + pathFile);
         byte[] fileContent = IOUtils.toByteArray(in);
@@ -52,6 +53,10 @@ public class FileService {
 
     public List<FileEntity> listSounds() {
         return fileRepository.findAllByDirectory("sounds", Sort.by("originalName").ascending());
+    }
+
+    public List<FileEntity> listSnapshots() {
+        return fileRepository.findAllByDirectory("snapshots", Sort.by("originalName").ascending());
     }
 
     public FileEntity getRandomSound() {
